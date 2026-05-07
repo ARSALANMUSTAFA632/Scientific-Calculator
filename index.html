@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsalan Ultimate Scientific</title>
+    <style>
+        :root {
+            --primary: #e40876;
+            --secondary: #fb7c14;
+            --bg: #000;
+            --btn-gray: #333;
+            --shift-color: #ffcc00;
+        }
+
+        body {
+            background-color: aqua;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .calc-body {
+            width: 100%;
+            max-width: 380px;
+            background: var(--bg);
+            border-radius: 35px;
+            padding: 25px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+        }
+
+        #display {
+            width: 100%;
+            height: 100px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 3rem;
+            text-align: right;
+            padding: 10px;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .status-bar {
+            color: var(--shift-color);
+            font-size: 0.9rem;
+            height: 20px;
+            font-weight: bold;
+            padding-left: 10px;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .sci-grid {
+            grid-template-columns: repeat(5, 1fr);
+            margin-bottom: 15px;
+            gap: 8px;
+        }
+
+        button {
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: white;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sci-btn {
+            height: 40px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background: #222;
+        }
+
+        .num { background: var(--btn-gray); }
+        .op { background: var(--secondary); }
+        .special { background: #a5a5a5; color: black; }
+        .shift-active { background: var(--shift-color) !important; color: black !important; }
+
+        button:active { transform: scale(0.9); opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <h1 style="color:#222; margin-bottom:15px;">ARSALAN : PRO 600+</h1>
+
+    <div class="calc-body">
+        <div id="shift-mode" class="status-bar"></div>
+        <input type="text" id="display" placeholder="0" readonly>
+
+        <!-- Scientific Controls -->
+        <div class="btn-grid sci-grid">
+            <button class="sci-btn" id="s-key" onclick="toggleShift()" style="color:var(--shift-yellow)">Shift</button>
+            <button class="sci-btn" onclick="math('sin')" id="b-sin">sin</button>
+            <button class="sci-btn" onclick="math('cos')" id="b-cos">cos</button>
+            <button class="sci-btn" onclick="math('tan')" id="b-tan">tan</button>
+            <button class="sci-btn" onclick="insert('Math.PI')">π</button>
+            
+            <button class="sci-btn" onclick="math('log')" id="b-log">log</button>
+            <button class="sci-btn" onclick="math('sqrt')" id="b-sqrt">√</button>
+            <button class="sci-btn" onclick="insert('**')">xʸ</button>
+            <button class="sci-btn" onclick="insert('Math.E')">e</button>
+            <button class="sci-btn" onclick="math('abs')">|x|</button>
+        </div>
+
+        <!-- Main Buttons -->
+        <div class="btn-grid">
+            <button class="special" onclick="clr()">AC</button>
+            <button class="special" onclick="del()">DEL</button>
+            <button class="special" onclick="insert('%')">%</button>
+            <button class="op" onclick="insert('/')">÷</button>
+
+            <button class="num" onclick="insert('7')">7</button>
+            <button class="num" onclick="insert('8')">8</button>
+            <button class="num" onclick="insert('9')">9</button>
+            <button class="op" onclick="insert('*')">×</button>
+
+            <button class="num" onclick="insert('4')">4</button>
+            <button class="num" onclick="insert('5')">5</button>
+            <button class="num" onclick="insert('6')">6</button>
+            <button class="op" onclick="insert('-')">−</button>
+
+            <button class="num" onclick="insert('1')">1</button>
+            <button class="num" onclick="insert('2')">2</button>
+            <button class="num" onclick="insert('3')">3</button>
+            <button class="op" onclick="insert('+')">+</button>
+
+            <button class="num" onclick="insert('0')" style="grid-column: span 2; border-radius: 30px;">0</button>
+            <button class="num" onclick="insert('.')">.</button>
+            <button class="op" style="background:var(--primary)" onclick="solve()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let scr = document.getElementById('display');
+        let sMode = false;
+
+        function toggleShift() {
+            sMode = !sMode;
+            document.getElementById('s-key').classList.toggle('shift-active');
+            document.getElementById('shift-mode').innerText = sMode ? "SHIFT ACTIVE" : "";
+            
+            document.getElementById('b-sin').innerText = sMode ? "asin" : "sin";
+            document.getElementById('b-cos').innerText = sMode ? "acos" : "cos";
+            document.getElementById('b-tan').innerText = sMode ? "atan" : "tan";
+            document.getElementById('b-log').innerText = sMode ? "ln" : "log";
+            document.getElementById('b-sqrt').innerText = sMode ? "∛" : "√";
+        }
+
+        function insert(v) { scr.value += v; }
+        function clr() { scr.value = ''; }
+        function del() { scr.value = scr.value.slice(0, -1); }
+
+        function math(t) {
+            let v = eval(scr.value) || 0;
+            try {
+                if(!sMode) {
+                    if(t=='sin') scr.value = Math.sin(v * Math.PI/180);
+                    if(t=='cos') scr.value = Math.cos(v * Math.PI/180);
+                    if(t=='tan') scr.value = Math.tan(v * Math.PI/180);
+                    if(t=='log') scr.value = Math.log10(v);
+                    if(t=='sqrt') scr.value = Math.sqrt(v);
+                    if(t=='abs') scr.value = Math.abs(v);
+                } else {
+                    if(t=='sin') scr.value = Math.asin(v) * 180/Math.PI;
+                    if(t=='cos') scr.value = Math.acos(v) * 180/Math.PI;
+                    if(t=='tan') scr.value = Math.atan(v) * 180/Math.PI;
+                    if(t=='log') scr.value = Math.log(v); // Natural Log (ln)
+                    if(t=='sqrt') scr.value = Math.cbrt(v); // Cube root
+                    toggleShift();
+                }
+                scr.value = parseFloat(eval(scr.value).toFixed(8));
+            } catch { scr.value = "Error"; }
+        }
+
+        function solve() {
+            try {
+                let r = eval(scr.value);
+                scr.value = parseFloat(r.toFixed(8));
+            } catch { scr.value = "Error"; }
+        }
+    </script>
+</body>
+</html>
