@@ -26,4 +26,5 @@ Toggle Shift: Press the 'Shift' button. The button will change color (to yellow)
 
 Execute Function: Press any scientific button (e.g., sin, cos, or log). The calculator will automatically execute the inverse or secondary function (e.g., asin, acos, or ln).
 
-👨‍💻 Author
+👨‍💻 Author : ARSALAN ( software engineer)
+   
